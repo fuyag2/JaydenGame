@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -49,9 +50,8 @@ body {
 }
 
 #game_board {
-    margin-left: -37%;  /* top/bottom 0, left/right auto */
+    margin-left: -37%;
 }
-
 
 td {
     width: 50px;
@@ -86,25 +86,82 @@ td button {
 }
 
 .leaderboard {
-    text-align: left;        /* left-align text inside leaderboard */
+    text-align: left;
     margin-left: -60%;
     margin-bottom: 190%;
     color: white;
     font-size: 26px;
-    width: 300px;            /* optional: fixed width */
+    width: 300px;
+}
+
+/* Help button */
+.help-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid black;
+    background-color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.help-button:hover {
+    background-color: rgb(200, 200, 200);
+}
+
+.help-popup {
+    display: none;
+    position: fixed;
+    bottom: 95px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border: 3px solid black;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: left;
+    z-index: 1001;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.help-popup h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.close-help {
+    margin-top: 10px;
+    padding: 8px 14px;
+    font-size: 16px;
+    border: 2px solid black;
+    background: #f0f0f0;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.close-help:hover {
+    background: #d9d9d9;
 }
 </style>
 
 <body>
 <h1>Mine Sweeper</h1>
 
-    <a href = "main.html">
-        <button class = 'back_button'>Back↩️</button>
-    </a>
+<a href="main.html">
+    <button class="back_button">Back↩️</button>
+</a>
 
-    <a href = "mine_sweeperv2.html">
-        <button class = 'play_again_button'>Restart🔄️</button>
-    </a>
+<a href="mine_sweeperv2.html">
+    <button class="play_again_button">Restart🔄️</button>
+</a>
 
 <div class="timer">Seconds: <span id="time">0</span></div>
 
@@ -119,16 +176,32 @@ td button {
     <div class="board-wrapper">
         <table id="game_board">
             <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
         </table>
     </div>
+</div>
+
+<!-- Help button -->
+<button class="help-button" onclick="toggleHelp()">?</button>
+
+<!-- Help popup -->
+<div id="helpPopup" class="help-popup">
+    <h3>⚠️ How to Play</h3>
+    <p>
+        • Press any box to start.<br>
+        • Left click to open a box.<br>
+        • Right click to place a flag 🚩.<br>
+        • Avoid the bombs 💣.<br>
+        • Flag all bombs correctly to win.
+    </p>
+    <button class="close-help" onclick="toggleHelp()">Close</button>
 </div>
 
 <script>
@@ -163,7 +236,7 @@ function downloadLeaderboard(){
     let blob = new Blob([text], { type: "text/plain" });
     let link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "C:\\Users\\hongl\\OneDrive\\Desktop\\jayden_game\\leaderboard.txt";    
+    link.download = "C:\\Users\\hongl\\OneDrive\\Desktop\\jayden_game\\leaderboard.txt";
     link.click();
 }
 
@@ -309,6 +382,16 @@ function cellClicked(event,i,j){
 
     render_board();
     check_game();
+}
+
+// ---------- Help popup ----------
+function toggleHelp() {
+    let popup = document.getElementById("helpPopup");
+    if (popup.style.display === "block") {
+        popup.style.display = "none";
+    } else {
+        popup.style.display = "block";
+    }
 }
 </script>
 </body>
