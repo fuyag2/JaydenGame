@@ -1,0 +1,315 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minesweeper</title>
+</head>
+
+<style>
+h1 {
+    font-size: 50px;
+    margin-bottom: 15px;
+    color:#ffffff;
+}
+
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+    url('https://thumbs.dreamstime.com/b/bit-pixel-art-game-background-dino-egg-prehistoric-retro-arcade-d-videogame-vector-landscape-mountains-rocky-hills-trees-blue-421174116.jpg?w=992');
+    background-size: cover;
+    background-position: center;
+}
+
+.back_button {
+    width: 80px;
+    height: 40px;
+    background-color: #ffffff;
+    border-radius: 10%;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border: 3px solid black;
+}
+.back_button:hover {
+    background-color: rgb(158, 158, 158);
+}
+
+.play_again_button {
+    width: 100px;
+    height: 40px;
+    background-color: #ffffff;
+    border-radius: 10%;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border: 3px solid black;
+}
+
+.play_again_button:hover {
+    background-color: rgb(158, 158, 158);
+}
+
+#game_board {
+    margin-left: -37%;  /* top/bottom 0, left/right auto */
+}
+
+
+td {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+}
+
+td button {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #444;
+    background-color: #d3d3d3;
+    cursor: pointer;
+    font-size: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer, .leaderboard {
+    color: white;
+    font-size: 20px;
+    margin-bottom: -15;
+}
+
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    height: 80vh;
+}
+
+.leaderboard {
+    text-align: left;        /* left-align text inside leaderboard */
+    margin-left: -60%;
+    margin-bottom: 190%;
+    color: white;
+    font-size: 26px;
+    width: 300px;            /* optional: fixed width */
+}
+</style>
+
+<body>
+<h1>Mine Sweeper</h1>
+
+    <a href = "main.html">
+        <button class = 'back_button'>Back↩️</button>
+    </a>
+
+    <a href = "mine_sweeperv2.html">
+        <button class = 'play_again_button'>Restart🔄️</button>
+    </a>
+
+<div class="timer">Seconds: <span id="time">0</span></div>
+
+<div class="game-container">
+    <div class="leaderboard-wrapper">
+        <div class="leaderboard">
+            🏆 Best Times
+            <div id="leaderboard"></div>
+        </div>
+    </div>
+
+    <div class="board-wrapper">
+        <table id="game_board">
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+// ---------- Leaderboard ----------
+var leaderboard = JSON.parse(localStorage.getItem("minesLeaderboard"));
+
+if (!leaderboard) {
+    leaderboard = [
+        {name:"AAA", time:999},
+        {name:"BBB", time:999},
+        {name:"CCC", time:999}
+    ];
+    localStorage.setItem("minesLeaderboard", JSON.stringify(leaderboard));
+}
+
+function displayLeaderboard(){
+    let medals = ["🥇","🥈","🥉"];
+    let text = "";
+    for(let i=0;i<leaderboard.length;i++){
+        text += medals[i] + " " + leaderboard[i].name + " - " + leaderboard[i].time + "s<br>";
+    }
+    document.getElementById("leaderboard").innerHTML = text;
+}
+displayLeaderboard();
+
+function downloadLeaderboard(){
+    let text = "";
+    for(let i=0;i<leaderboard.length;i++){
+        text += leaderboard[i].name + "," + leaderboard[i].time + "\n";
+    }
+
+    let blob = new Blob([text], { type: "text/plain" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "C:\\Users\\hongl\\OneDrive\\Desktop\\jayden_game\\leaderboard.txt";    
+    link.click();
+}
+
+function checkLeaderboard(){
+    for(let i=0;i<leaderboard.length;i++){
+        if(timeElapsed < leaderboard[i].time){
+            let name = prompt("New Record! Enter your name:");
+            leaderboard.splice(i,0,{name:name,time:timeElapsed});
+            leaderboard.pop();
+            localStorage.setItem("minesLeaderboard", JSON.stringify(leaderboard));
+            displayLeaderboard();
+            downloadLeaderboard();
+            return;
+        }
+    }
+}
+
+// ---------- Game ----------
+document.addEventListener("contextmenu", function(event) {
+    event.preventDefault();
+});
+
+let grid = Array(9).fill().map(()=>Array(9).fill('⬜'));
+let bomb = Array(9).fill().map(()=>Array(9).fill(0));
+let used = new Set();
+
+var timeElapsed = 0;
+var myTimer = 0;
+let timerStarted = false;
+
+function start(){
+    myTimer = setInterval(function(){
+        timeElapsed++;
+        document.getElementById("time").innerText = timeElapsed;
+    },1000);
+}
+
+function stop(){
+    clearInterval(myTimer);
+}
+
+function random_bomb(amount){
+    while(used.size < amount){
+        let r = Math.floor(Math.random()*9);
+        let c = Math.floor(Math.random()*9);
+        let key = r + "," + c;
+        if(!used.has(key)){
+            used.add(key);
+            bomb[r][c] = 1;
+        }
+    }
+}
+random_bomb(10);
+
+let numbers_display = ["0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣"];
+
+function check_surrounding_bombs(x,y){
+    let temp = 0;
+    for(let i=-1;i<=1;i++){
+        for(let j=-1;j<=1;j++){
+            if(i===0 && j===0) continue;
+            let nx = x+i;
+            let ny = y+j;
+            if(nx>=0 && nx<9 && ny>=0 && ny<9){
+                if(bomb[nx][ny]==1) temp++;
+            }
+        }
+    }
+    return temp;
+}
+
+let table = document.getElementById("game_board");
+let rows = table.getElementsByTagName("tr");
+
+function render_board(){
+    for(let i=0;i<9;i++){
+        let cells = rows[i].getElementsByTagName("td");
+        for(let j=0;j<9;j++){
+            cells[j].innerHTML =
+            "<button onmousedown='cellClicked(event,"+i+","+j+")'>"+
+            grid[i][j]+"</button>";
+        }
+    }
+}
+render_board();
+
+function clear_black(i,j){
+    if(i<0||i>=9||j<0||j>=9) return;
+    if(grid[i][j] !== '⬜') return;
+
+    let bombsAround = check_surrounding_bombs(i,j);
+
+    if(bombsAround>0){
+        grid[i][j] = numbers_display[bombsAround];
+        return;
+    }
+
+    grid[i][j] = "⬛";
+
+    for(let dx=-1;dx<=1;dx++){
+        for(let dy=-1;dy<=1;dy++){
+            clear_black(i+dx,j+dy);
+        }
+    }
+}
+
+function check_game(){
+    for(let i=0;i<9;i++){
+        for(let j=0;j<9;j++){
+            if(bomb[i][j]==1 && grid[i][j] !== '🚩') return;
+            if(bomb[i][j]==0 && grid[i][j] === '🚩') return;
+        }
+    }
+
+    stop();
+    alert("🎉 You Win in " + timeElapsed + " seconds!");
+    checkLeaderboard();
+}
+
+function cellClicked(event,i,j){
+    if(event.button===0){
+        if(!timerStarted){
+            start();
+            timerStarted=true;
+        }
+
+        if(bomb[i][j]==1){
+            grid[i][j]="💣";
+            alert("You Lost!");
+            location.reload();
+        }
+        else if(check_surrounding_bombs(i,j)==0){
+            clear_black(i,j);
+        }
+        else{
+            grid[i][j] = numbers_display[check_surrounding_bombs(i,j)];
+        }
+    }
+    else if(event.button===2){
+        if(grid[i][j]=='⬜') grid[i][j]='🚩';
+        else if(grid[i][j]=='🚩') grid[i][j]='⬜';
+    }
+
+    render_board();
+    check_game();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="tetris.css">
+	<title>Tetra block game</title>
+</head>
+<body style="background-color:#161a22;">
+	    <a href = "main.html">
+        <button class = 'back_button'>Back↩️</button>
+    </a>
+	<div id="score"><p>Score: <span id="output"></span> points</p>
+</div>
+
+<div id="tetris-board"></div>
+<script src="tetris.js"></script>
+
+<br>
+<br>
+
+<div id='redbutton' onclick="startGame()">Start Game</div>
+<div id='bigbox'>
+	<div id='texts'>
+	<br>
+	<br>
+	<p>Controls:
+	Up: Rotate clockwise</p>
+	<p>Down: Soft drop</p>
+	<p>Left: Move piece left</p>
+	<p>Right: Move piece rights</p>
+</div>
+</div>
+
+</body>
+</html>

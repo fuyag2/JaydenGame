@@ -1,0 +1,342 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style type = "text/css">
+
+h1 {
+    font-size: 50px;
+    margin-bottom: 15px;
+    color:#ffffff;
+}
+
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: rgb(255, 239, 224);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                              url('https://thumbs.dreamstime.com/b/bit-pixel-art-game-background-dino-egg-prehistoric-retro-arcade-d-videogame-vector-landscape-mountains-rocky-hills-trees-blue-421174116.jpg?w=992');
+            background-size: cover;
+            bacskground-position: center;
+            background-attachment: fixed;
+}
+
+.back_button {
+    width: 80px;
+    height: 40px;
+    background-color: #ffffff;
+    border-radius: 10%;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border: 3px solid black;
+}
+
+.back_button:hover {
+    background-color: rgb(158, 158, 158);
+}
+
+.play_again_button {
+    width: 100px;
+    height: 40px;
+    background-color: #ffffff;
+    border-radius: 10%;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border: 3px solid black;
+}
+
+.play_again_button:hover {
+    background-color: rgb(158, 158, 158);
+}
+
+/* Remove default table spacing */
+table {
+    border-collapse: collapse;
+    margin: auto;
+}
+
+/* Make square cells */
+td {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+}
+
+/* Make buttons fill the cell */
+td button {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #444;
+    background-color: #d3d3d3;
+    cursor: pointer;
+    font-size: 38px;
+
+    /* THIS centers perfectly */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0;
+}
+
+/* Optional hover effect */
+td button:hover {
+    background-color: #bcbcbc;
+}
+
+.timer {
+    color:#ffffff;
+    font-weight: bold;
+    
+}
+
+</style>
+
+<body>
+    <h1>Mine Sweeper</h1>
+    <a href = "main.html">
+        <button class = 'back_button'>Back↩️</button>
+    </a>
+
+    <a href = "mine_sweeper.html">
+        <button class = 'play_again_button'>Restart🔄️</button>
+    </a>
+
+    <div class = "timer">Seconds: <span id="time"></span></div>
+
+    <table id="game_board" class = 'board'>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+        </tr>
+    </table>
+
+
+    <script>
+    document.addEventListener("contextmenu", function(event) {
+        event.preventDefault();
+    });
+
+    let grid = [
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜'],
+    ['⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜','⬜']
+    ]
+
+    let bomb = [
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0]
+    ]
+
+    let used = new Set();
+
+    var timeElapsed = 0;
+    var myTimer = 0;
+    let timerStarted = false;
+
+    function start() {
+        myTimer = setInterval(function() {
+            timeElapsed += 1;
+            document.getElementById("time").innerText = timeElapsed;
+        },1000);
+    }
+
+    function stop(){
+        clearInterval(myTimer);
+    }
+
+    function random_bomb(amount){
+        let rows = 9;
+        let cols = 9;
+
+        while(used.size < amount){
+            let r = Math.floor(Math.random()*rows);
+            let c = Math.floor(Math.random()*cols);
+
+            let key = r + "," + c;
+
+            if(!used.has(key)){
+                used.add(key);
+                bomb[r][c] = 1;
+            }
+        }
+    }
+
+    random_bomb(10);
+
+    let numbers_display = ["0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣"]
+
+    function check_surrounding_bombs(x,y){
+        let temp = 0;
+
+        for(let i=-1;i<=1;i++){
+            for(let j=-1;j<=1;j++){
+
+                if(i===0 && j===0) continue;
+
+                let nx = x+i;
+                let ny = y+j;
+
+                if(nx>=0 && nx<9 && ny>=0 && ny<9){
+                    if(bomb[nx][ny]==1) temp++;
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    let table = document.getElementById("game_board");
+    let rows = table.getElementsByTagName("tr");
+
+    function render_board(){
+
+        for(let i=0;i<grid.length;i++){
+
+            let cells = rows[i].getElementsByTagName("td");
+
+            for(let j=0;j<grid[i].length;j++){
+
+                cells[j].innerHTML =
+                "<button onmousedown='cellClicked(event,"+i+","+j+")'>"+
+                grid[i][j]+
+                "</button>";
+
+            }
+        }
+    }
+
+    render_board();
+
+    function clear_black(i,j){
+
+        if(i<0 || i>=9 || j<0 || j>=9) return;
+        if(grid[i][j] !== '⬜') return;
+
+        let bombsAround = check_surrounding_bombs(i,j);
+
+        if(bombsAround>0){
+            grid[i][j] = numbers_display[bombsAround];
+            return;
+        }
+
+        grid[i][j] = "⬛";
+
+        clear_black(i-1,j-1);
+        clear_black(i-1,j);
+        clear_black(i-1,j+1);
+        clear_black(i,j-1);
+        clear_black(i,j+1);
+        clear_black(i+1,j-1);
+        clear_black(i+1,j);
+        clear_black(i+1,j+1);
+    }
+
+    function check_game(){
+
+        for(let i=0;i<9;i++){
+            for(let j=0;j<9;j++){
+
+                if(bomb[i][j]==1 && grid[i][j] !== '🚩'){
+                    return;
+                }
+
+                if(bomb[i][j]==0 && grid[i][j] === '🚩'){
+                    return;
+                }
+            }
+        }
+
+        alert("🎉 You Win with " + timeElapsed + " seconds!");
+        stop();
+    }
+
+    function cellClicked(event,i,j){
+
+        if(event.button===0){
+
+            if(!timerStarted){
+                start();
+                timerStarted=true;
+            }
+
+            if(bomb[i][j]==1){
+                grid[i][j]="💣";
+                alert("You Lost!");
+                location.reload();
+            }
+
+            else if(check_surrounding_bombs(i,j)==0){
+                clear_black(i,j);
+            }
+
+            else{
+                grid[i][j] = numbers_display[check_surrounding_bombs(i,j)];
+            }
+
+        }
+
+        else if(event.button===2){
+
+            if(grid[i][j]=='⬜'){
+                grid[i][j]='🚩';
+            }
+            else if(grid[i][j]=='🚩'){
+                grid[i][j]='⬜';
+            }
+
+        }
+
+        render_board();
+        check_game();
+    }
+    </script>
+</body>
+</html>

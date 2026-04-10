@@ -1,0 +1,98 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0f1115;
+    color: #e8e8e8;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 50px;
+    font-weight: 700;
+  }
+  
+  .rules {
+    opacity: 0.9;
+  }
+  
+  #game {
+    display: grid;
+    grid-template-columns: repeat(20, 20px);
+    grid-template-rows: repeat(20, 20px);
+    gap: 1px;
+    padding: 14px;
+    background: #161a22;
+    border: 1px solid #2a3140;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+  }
+  
+  .cell {
+    width: 20px;
+    height: 20px;
+    background: #0b0d12;
+    border: 1px solid #1f2530;
+    box-sizing: border-box;
+  }
+  
+  .cell.snake {
+    background: #2ee56b;
+  }
+  
+  .cell.head {
+    background: #6bff9a;
+  }
+  
+  .cell.food {
+    background: #ff4d4d;
+  }
+  
+  .overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.45);
+  }
+  
+  .overlay.hidden {
+    display: none;
+  }
+  
+  .panel {
+    text-align: center;
+  }
+  
+  .Gameovertext {
+    font-size: 40px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: white;
+  }
+  
+  .Restarttext {
+    font-size: 13px;
+    color: #e8e8e8;
+    opacity: 0.85;
+  }
+
