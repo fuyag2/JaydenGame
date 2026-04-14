@@ -5,13 +5,17 @@
   <link rel="stylesheet" href="snakegamev2.css" />
 </head>
 <body>
-      <a href = "main.html">
-        <button class = 'back_button'>Back↩️</button>
-    </a>
+
+  <a href="main.html">
+    <button class="back_button">Back↩️</button>
+  </a>
+
   <div class="wrap">
     <div class="title">Snake Game</div>
+
     <div class="top">
       <div>Score: <span id="score">0</span></div>
+      <div>High Score: <span id="highscore">0</span></div>
       <div class="rules">|Arrow keys to move|Space to restart|</div>
     </div>
 
@@ -19,227 +23,200 @@
 
     <div id="overlay" class="overlay hidden">
       <div class="panel">
-        <div class="Gameovertext" id="overText">Game Over</div>
+        <div class="Gameovertext">Game Over</div>
         <div class="Restarttext">Press Space to restart</div>
       </div>
     </div>
   </div>
 
-  <script>
-      function showGameOver() {
-      document.getElementById("overlay").classList.remove("hidden");
-      }
+<script>
 
-      function hideGameOver() {
-      document.getElementById("overlay").classList.add("hidden");
-      }
+function showGameOver() {
+  document.getElementById("overlay").classList.remove("hidden");
+}
 
+function hideGameOver() {
+  document.getElementById("overlay").classList.add("hidden");
+}
 
+var grid = Array.from({length:20}, () => Array(20).fill(0));
 
+var board = document.getElementById("game");
+var score = 0;
+var scoreText = document.getElementById("score");
 
+var highscore = 0;
+var highscoreText = document.getElementById("highscore");
 
-    var grid = [
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+function drawGrid() {
+  board.innerHTML = "";
 
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  grid.forEach(function(row, r) {
+    row.forEach(function(value, c) {
+      var cell = document.createElement("div");
+      cell.className = "cell";
+      cell.id = "cell-" + r + "-" + c;
 
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      if (value === 1) cell.classList.add("snake");
+      if (value === 2) cell.classList.add("food");
+      if (value === 3) cell.classList.add("head");
 
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    ];
-
-    var board = document.getElementById("game");
-    var score = 0;
-    var scoreText = document.getElementById("score");
-
-    function drawGrid() {
-      board.innerHTML = "";
-
-      grid.forEach(function(row, r) {
-        row.forEach(function(value, c) {
-          var cell = document.createElement("div");
-          cell.className = "cell";
-          cell.id = "cell-" + r + "-" + c;
-
-          if (value === 1) {
-            cell.classList.add("snake");
-          }
-
-          if (value === 2) {
-            cell.classList.add("food");
-          }
-
-          if (value === 3) {
-            cell.classList.add("head");
-          }
-
-          board.appendChild(cell);
-        });
-      });
-    }
-
-    var snake = [
-      {r:10, c:10},
-      {r:10, c:9},
-      {r:10, c:8},
-      {r:10, c:7}
-    ];
-
-    var food = {r:10, c:13};
-
-    // starts idle
-    var dir = {r:0, c:0};
-
-    // next direction for smooth turning
-    var nextDir = {r:0, c:0};
-
-    var gameLoop;
-
-    function redrawSnakeAndFood() {
-      for (var r = 0; r < 20; r++) {
-        for (var c = 0; c < 20; c++) {
-          grid[r][c] = 0;
-        }
-      }
-
-      grid[food.r][food.c] = 2;
-
-      for (var i = 1; i < snake.length; i++) {
-        grid[snake[i].r][snake[i].c] = 1;
-      }
-
-      grid[snake[0].r][snake[0].c] = 3;
-
-      drawGrid();
-    }
-
-    function moveOneStep() {
-      if (nextDir.r !== 0 || nextDir.c !== 0) {
-        dir = nextDir;
-      }
-
-      if (dir.r === 0 && dir.c === 0) {
-        return;
-      }
-
-      var head = snake[0];
-      var newHead = {
-        r: head.r + dir.r,
-        c: head.c + dir.c
-      };
-
-      if (newHead.r < 0 || newHead.r > 19 || newHead.c < 0 || newHead.c > 19) {
-        clearInterval(gameLoop);
-        showGameOver();
-        return;
-      }
-
-      for (var i = 0; i < snake.length; i++) {
-        if (snake[i].r === newHead.r && snake[i].c === newHead.c) {
-          clearInterval(gameLoop);
-          showGameOver ();
-          return;
-        }
-      }
-
-      snake.unshift(newHead);
-
-      if (newHead.r === food.r && newHead.c === food.c) {
-        score = score + 1;
-        scoreText.textContent = score;
-
-        placeFood();
-      } else {
-        snake.pop();
-      }
-
-      redrawSnakeAndFood();
-    }
-
-    function placeFood() {
-      var goodSpot = false;
-
-      while (goodSpot === false) {
-        var newRow = Math.floor(Math.random() * 20);
-        var newCol = Math.floor(Math.random() * 20);
-
-        goodSpot = true;
-
-        for (var i = 0; i < snake.length; i++) {
-          if (snake[i].r === newRow && snake[i].c === newCol) {
-            goodSpot = false;
-          }
-        }
-
-        if (goodSpot === true) {
-          food = {r:newRow, c:newCol};
-        }
-      }
-    }
-
-    function resetGame() {
-      snake = [
-        {r:10, c:10},
-        {r:10, c:9},
-        {r:10, c:8},
-        {r:10, c:7}
-        
-      ];
-
-      food = {r:10, c:13};
-      dir = {r:0, c:0};
-      nextDir = {r:0, c:0};
-      score = 0;
-      scoreText.textContent = score;
-      hideGameOver ();
-
-      redrawSnakeAndFood();
-
-      clearInterval(gameLoop);
-      gameLoop = setInterval(moveOneStep, 200);
-    }
-
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "ArrowUp" && dir.r !== 1) {
-        nextDir = {r:-1, c:0};
-      }
-
-      if (e.key === "ArrowDown" && dir.r !== -1) {
-        nextDir = {r:1, c:0};
-      }
-
-      if (e.key === "ArrowLeft" && dir.c !== 1) {
-        nextDir = {r:0, c:-1};
-      }
-
-      if (e.key === "ArrowRight" && dir.c !== -1) {
-        nextDir = {r:0, c:1};
-      }
-
-      if (e.key === " ") {
-        resetGame();
-      }
+      board.appendChild(cell);
     });
+  });
+}
 
-    redrawSnakeAndFood();
-    gameLoop = setInterval(moveOneStep, 200);
+var snake = [
+  {r:10, c:10},
+  {r:10, c:9},
+  {r:10, c:8},
+  {r:10, c:7}
+];
 
-  </script>
+var food = {r:10, c:13};
+
+var dir = {r:0, c:0};
+var nextDir = {r:0, c:0};
+var gameLoop;
+
+function redrawSnakeAndFood() {
+  for (var r=0; r<20; r++) {
+    for (var c=0; c<20; c++) {
+      grid[r][c] = 0;
+    }
+  }
+
+  grid[food.r][food.c] = 2;
+
+  for (var i=1; i<snake.length; i++) {
+    grid[snake[i].r][snake[i].c] = 1;
+  }
+
+  grid[snake[0].r][snake[0].c] = 3;
+
+  drawGrid();
+}
+
+function moveOneStep() {
+
+  if (nextDir.r !== 0 || nextDir.c !== 0) {
+    dir = nextDir;
+  }
+
+  if (dir.r === 0 && dir.c === 0) return;
+
+  var head = snake[0];
+  var newHead = {
+    r: head.r + dir.r,
+    c: head.c + dir.c
+  };
+
+  // WALL COLLISION
+  if (newHead.r < 0 || newHead.r > 19 || newHead.c < 0 || newHead.c > 19) {
+    clearInterval(gameLoop);
+
+    if (score > highscore) {
+      highscore = score;
+      highscoreText.textContent = highscore;
+    }
+
+    showGameOver();
+    return;
+  }
+
+  // SELF COLLISION
+  for (var i=0; i<snake.length; i++) {
+    if (snake[i].r === newHead.r && snake[i].c === newHead.c) {
+      clearInterval(gameLoop);
+
+      if (score > highscore) {
+        highscore = score;
+        highscoreText.textContent = highscore;
+      }
+
+      showGameOver();
+      return;
+    }
+  }
+
+  snake.unshift(newHead);
+
+  // EAT FOOD
+  if (newHead.r === food.r && newHead.c === food.c) {
+    score++;
+    scoreText.textContent = score;
+
+    placeFood();
+
+    // update highscore instantly (optional nice UX)
+    if (score > highscore) {
+      highscore = score;
+      highscoreText.textContent = highscore;
+    }
+
+  } else {
+    snake.pop();
+  }
+
+  redrawSnakeAndFood();
+}
+
+function placeFood() {
+  var goodSpot = false;
+
+  while (!goodSpot) {
+    var r = Math.floor(Math.random() * 20);
+    var c = Math.floor(Math.random() * 20);
+
+    goodSpot = true;
+
+    for (var i=0; i<snake.length; i++) {
+      if (snake[i].r === r && snake[i].c === c) {
+        goodSpot = false;
+      }
+    }
+
+    if (goodSpot) {
+      food = {r:r, c:c};
+    }
+  }
+}
+
+function resetGame() {
+  snake = [
+    {r:10, c:10},
+    {r:10, c:9},
+    {r:10, c:8},
+    {r:10, c:7}
+  ];
+
+  food = {r:10, c:13};
+  dir = {r:0, c:0};
+  nextDir = {r:0, c:0};
+
+  score = 0;
+  scoreText.textContent = score;
+
+  hideGameOver();
+  redrawSnakeAndFood();
+
+  clearInterval(gameLoop);
+  gameLoop = setInterval(moveOneStep, 200);
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowUp" && dir.r !== 1) nextDir = {r:-1, c:0};
+  if (e.key === "ArrowDown" && dir.r !== -1) nextDir = {r:1, c:0};
+  if (e.key === "ArrowLeft" && dir.c !== 1) nextDir = {r:0, c:-1};
+  if (e.key === "ArrowRight" && dir.c !== -1) nextDir = {r:0, c:1};
+
+  if (e.key === " ") resetGame();
+});
+
+redrawSnakeAndFood();
+gameLoop = setInterval(moveOneStep, 200);
+
+</script>
+
 </body>
 </html>
