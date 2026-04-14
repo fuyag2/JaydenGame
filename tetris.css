@@ -12,6 +12,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 28px 16px;
+  overflow: hidden;
 }
 
 .game-title {
@@ -161,3 +162,32 @@ body {
   color: #c4b5fd;
   font-family: monospace;
 }
+
+.difficulty-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diff-btn {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.diff-btn:hover  { opacity: 0.85; transform: translateY(-1px); }
+.diff-btn:active { transform: translateY(0); }
+
+.diff-easy   { background: #1a3a1f; color: #5ecb3e; border: 1px solid #2d6b35; }
+.diff-normal { background: #3a3010; color: #f5c842; border: 1px solid #7a6010; }
+.diff-hard   { background: #3a1212; color: #ef4444; border: 1px solid #7a2020; }
+
+.diff-easy:hover   { background: #1f4a24; }
+.diff-normal:hover { background: #4a3d14; }
+.diff-hard:hover   { background: #4a1818; }
