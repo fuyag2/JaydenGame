@@ -18,6 +18,7 @@ function startGame(){
     createRandom();
     gamerunning = true
     score = 0
+    document.getElementById("output").innerHTML = score;
     document.getElementById('redbutton').style.backgroundColor = 'grey'
   }
 }
@@ -31,9 +32,26 @@ function clearBoard(){
   sevenbag = ["T", "S", "Z", "J", "L", "I", "O"]
 }
 
-const intervalId = setInterval(() => {
-  dropTblock();
-}, 200);
+var tickspeed = 200;
+var intervalId = setInterval(() => { dropTblock(); }, tickspeed);
+
+function hardMode(){
+  tickspeed = 200;
+  clearInterval(intervalId);
+  intervalId = setInterval(() => { dropTblock(); }, tickspeed);
+}
+
+function normalMode(){
+  tickspeed = 500;
+  clearInterval(intervalId);
+  intervalId = setInterval(() => { dropTblock(); }, tickspeed);
+}
+
+function easyMode(){
+  tickspeed = 1000;
+  clearInterval(intervalId);
+  intervalId = setInterval(() => { dropTblock(); }, tickspeed);
+}
 
 var sevenbag = ["T", "S", "Z", "J", "L", "I", "O"]
 const sevenbagbackup = ["T", "S", "Z", "J", "L", "I", "O"]
@@ -445,7 +463,7 @@ if (currentpiece == "T") {
     }
 }
   }
-
+  drawGrid()
 }
 
 
