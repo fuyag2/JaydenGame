@@ -10,12 +10,18 @@
   <div class="game-wrapper">
     <div id="tetris-board"></div>
     <div class="side-panel">
-      <div class="panel-card">
+      <div class="panel-card" >
         <div class="panel-label">Score</div>
         <div class="score-value" id="output">0</div>
       </div>
       <button id="redbutton" onclick="startGame()">▶ Start Game</button>
-      <div class="panel-card">
+      <div class="panel-card" >
+        <div class="panel-label">Difficulty</div>
+  <div class="difficulty-btns">
+    <button class="diff-btn diff-easy" onclick="easyMode()">Easy</button>
+    <button class="diff-btn diff-normal" onclick="normalMode()">Normal</button>
+    <button class="diff-btn diff-hard" onclick="hardMode()">Hard</button>
+  </div>
         <div class="panel-label">Controls</div>
         <ul class="controls-list">
           <li><span>Rotate</span><span class="key-badge">↑</span></li>
