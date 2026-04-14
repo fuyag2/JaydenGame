@@ -118,6 +118,26 @@ body {
   list-style: none;
 }
 
+.back-btn {
+  align-self: flex-start;
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 7px 14px;
+  background: #161922;
+  border: 1px solid #2e3347;
+  border-radius: 7px;
+  color: #9ca3af;
+  font-size: 13px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.back-btn:hover {
+  background: #1e2235;
+  color: #c4b5fd;
+}
+
 .controls-list li {
   display: flex;
   justify-content: space-between;
