@@ -1,34 +1,30 @@
-<!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="tetris.css">
-	<title>Tetra block game</title>
+  <link rel="stylesheet" href="tetris.css">
+  <title>Tetrablocks</title>
 </head>
-<body style="background-color:#161a22;">
-	    <a href = "main.html">
-        <button class = 'back_button'>Back↩️</button>
-    </a>
-	<div id="score"><p>Score: <span id="output"></span> points</p>
-</div>
-
-<div id="tetris-board"></div>
-<script src="tetris.js"></script>
-
-<br>
-<br>
-
-<div id='redbutton' onclick="startGame()">Start Game</div>
-<div id='bigbox'>
-	<div id='texts'>
-	<br>
-	<br>
-	<p>Controls:
-	Up: Rotate clockwise</p>
-	<p>Down: Soft drop</p>
-	<p>Left: Move piece left</p>
-	<p>Right: Move piece rights</p>
-</div>
-</div>
-
+<body>
+  <div class="game-title">TETRA BLOCK GAME</div>
+  <div class="game-subtitle">CLASSIC PUZZLE</div>
+  <div class="game-wrapper">
+    <div id="tetris-board"></div>
+    <div class="side-panel">
+      <div class="panel-card">
+        <div class="panel-label">Score</div>
+        <div class="score-value" id="output">0</div>
+      </div>
+      <button id="redbutton" onclick="startGame()">▶ Start Game</button>
+      <div class="panel-card">
+        <div class="panel-label">Controls</div>
+        <ul class="controls-list">
+          <li><span>Rotate</span><span class="key-badge">↑</span></li>
+          <li><span>Move left</span><span class="key-badge">←</span></li>
+          <li><span>Move right</span><span class="key-badge">→</span></li>
+          <li><span>Soft drop</span><span class="key-badge">↓</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="tetris.js"></script>
 </body>
 </html>
